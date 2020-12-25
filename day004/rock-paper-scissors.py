@@ -71,15 +71,20 @@ def clear():
         _ = system('clear')
 
 
-while (user_selection >= 0):
+while user_selection >= 0:
     print(f"""
     ---------------------------------------------------------------------
     User : {user_score}                       Computer : {computer_score}                  
     ---------------------------------------------------------------------
     """
           )
-    user_selection = int(input("Which one do you choose ? \n 0 - Rock \n 1 - Paper\n 2 - Scissors\nType the "
-                               "corresponding index : "))
+    user_selection_string = input("Which one do you choose ? \n 0 - Rock \n 1 - Paper\n 2 - Scissors\nType the "
+                                  "corresponding index : ")
+    if user_selection_string != "":
+        user_selection = int(user_selection_string)
+    else:
+        print("Please make a selection")
+        continue
     if 3 > user_selection >= 0:
         print("You chose : ")
         display_logo(user_selection)
