@@ -1,5 +1,6 @@
 import random
 from os import system, name
+from time import sleep
 
 rock = '''
 rock
@@ -105,4 +106,6 @@ while user_selection >= 0:
         print("\n\n---------------------------------------------------------------------\n",
               "!!!!!....Wrong Selection....!!!!!\n",
               "---------------------------------------------------------------------\n")
+    # sleep for 2 seconds after printing output
+    sleep(2)
     clear()
