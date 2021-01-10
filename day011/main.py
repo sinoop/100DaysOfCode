@@ -3,12 +3,11 @@ from os import name, system
 from time import sleep
 
 from art import card_template, logo
-from card import Card, Person
+from card import Card
+from person import Person
 
 choice = "y"
-win_check = -1
-human = Person(name="Sinoop", type="human")
-dealer = Person(name="Eric", type="dealer")
+
 
 def clear():
     # for windows
@@ -20,59 +19,62 @@ def clear():
 
 
 while choice == 'y':
-    Person.draw_a_card(human, True)
-    Person.draw_a_card(human, True)
-    human.print_cards_deck()
-    Person.draw_a_card(dealer, True)
-    Person.draw_a_card(dealer, False)
-    dealer.print_cards_deck(print_only_visible=True)
+    human = Person(name="Sinoop", type_of_user="human")
+    dealer = Person(name="Eric", type_of_user="dealer")
 
-    draw_new_card = input(
-        "Do you want to draw a new card? Type 'y' or 'n': ").lower()
-    while draw_new_card == 'y' and win_check < 0:
-        Person.draw_a_card(human, True)
-        sleep(1)
+    human.draw_a_card(visible=True)
+    human.draw_a_card(visible=True)
+    dealer.draw_a_card(visible=True)
+    dealer.draw_a_card(visible=False)
+    dealer_win_status = dealer.check_if_won()
+
+    if dealer_win_status == 'WON':
+        print("Dealer has blackjack. Dealer won")
+
+    while True:
         clear()
         human.print_cards_deck()
-        win_check = human.check_if_won()
-        if win_check < 0:
+        dealer.print_cards_deck(print_only_visible=True)
+        human_win_status = human.check_if_won()
+        if human_win_status == 'NA':
             draw_new_card = input(
                 "Do you want to draw a new card? Type 'y' or 'n': ").lower()
-        elif win_check > 0:
-            print(
-                f"You have lost. Total > 21. Your score : {human.total_score}")
-            draw_new_card = 'n'
-            break
+            if draw_new_card == 'n':
+                break
+            else:
+                human.draw_a_card(True)
         else:
-            print(f"You won.. Your score : {human.total_score}")
-            draw_new_card = 'n'
+            draw_new_card = '-'
             break
 
     if draw_new_card == 'n':
-        win_check = dealer.check_if_won()
-        if win_check < 0:
-            continue
-        elif win_check > 0:
-            print(
-                f"Dealer {dealer.name} lost. Total > 21. Dealer score : {dealer.total_score}")
-            break
-        else:
-            print(f"Dealer won.. Dealer score : {dealer.total_score}")
-            break
-        Person.draw_a_card(dealer, True)
-        while dealer.check_if_won() < 0:
-            Person.draw_a_card(dealer, True)
+        dealer_win_status = dealer.check_if_won()
+        while dealer_win_status == 'NA' and dealer.total_score < 17:
+            dealer.draw_a_card(visible=True)
+            clear()
+            human.print_cards_deck()
+            dealer.print_cards_deck()
+            dealer_win_status = dealer.check_if_won()
 
-    win_check = dealer.check_if_won()
-    if win_check < 0:
-        continue
-    elif win_check > 0:
+    clear()
+    # print(f"dealer_win_status = {dealer_win_status} human_win_status = {human_win_status}")
+
+    if human_win_status == 'LOST':
+        print(f"{human.name} lost. Total > 21")
+    elif dealer_win_status == 'WON':
+        print(f"Dealer won.")
+    elif human_win_status == 'WON':
+        print(f"{human.name} won.")
+    elif dealer_win_status == 'LOST':
         print(
             f"Dealer {dealer.name} lost. Total > 21. Dealer score : {dealer.total_score}")
-        break
-    else:
-        print(f"Dealer won.. Dealer score : {dealer.total_score}")
-        break
+    elif dealer_win_status == 'NA' and human_win_status == 'NA':
+        if human.total_score > dealer.total_score:
+            print(f"{human.name} won.")
+        else:
+            print(f"Dealer won.")
 
+    human.print_cards_deck()
+    dealer.print_cards_deck()
     choice = input(
         "Do you want to play a game of Blackjack? Type 'y' or 'n': ").lower()

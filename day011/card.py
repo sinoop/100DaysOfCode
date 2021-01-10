@@ -2,7 +2,7 @@ from art import logo, card_template
 import random
 
 cards_dict = {
-    'A': 1,
+    'A': 11,
     'K': 10,
     'Q': 10,
     'J': 10,
@@ -19,3 +19,13 @@ cards_dict = {
 
 def draw_a_card():
     return random.choice(list(cards_dict.keys()))
+
+class Card:
+    card_name = ""
+    card_value = 0
+    visible = False
+
+    def  __init__(self, card_name, card_value, visible):
+        self.card_name = card_name
+        self.card_value = card_value
+        self.visible = visible
