@@ -1,5 +1,8 @@
 from operator import mod
 from decimal import Decimal
+
+from pip._internal.cli.cmdoptions import quiet
+
 from resources import resources, MENU
 
 QUARTER_VALUE = Decimal("0.25")
@@ -52,10 +55,22 @@ def check_and_give_balance(amount, total_given):
         return True
     elif amount < total_given:
         balance = round(total_given - amount, 2)
+        quarters, nickel, dime, penny = calculate_balance_coins(balance)
         print(f"Total is ${amount}, "
               f"You have tendered ${total_given}. "
-              f"Balance amount is : ${balance}")
-        calculate_balance_coins(balance)
+              f"Balance amount is : ${balance}.")
+        balance_string = ""
+        if quarters != 0:
+            balance_string += f"{quarters} quarters."
+        if nickel != 0:
+            balance_string += f"{nickel} nickels."
+        if dime != 0:
+            balance_string += f"{dime} dimes."
+        if penny != 0:
+            balance_string += f"{penny} pennies"
+
+        print(f"Tendering {balance_string}")
+
         return True
     else:
         balance = round(amount - total_given, 2)
@@ -79,12 +94,14 @@ def get_coins() -> Decimal:
 class CoffeeMachine:
     ingredients = {}
     menu = {}
+    cash_register = 0.0
 
     def __init__(self):
         for i in resources:
             self.ingredients[i] = resources.get(i)
         for i in MENU:
             self.menu[i] = MENU[i]
+        self.cash_register = Decimal("0.0")
 
     def check_if_sufficient_ingredients_present(self, item):
         for ingredient in self.menu.get(item).get('ingredients'):
@@ -102,9 +119,15 @@ class CoffeeMachine:
         print(f"Cost is : ${cost}")
 
         if check_and_give_balance(cost, get_coins()):
+            self.cash_register += cost
             for ingredient in MENU.get(item).get('ingredients'):
                 self.ingredients[ingredient] -= MENU.get(item).get('ingredients').get(ingredient)
                 print(f"{ingredient} = {self.ingredients[ingredient]}")
+
+    def print_report(self):
+        for i in self.ingredients.keys():
+            print(f"{i} = {self.ingredients[i]}")
+        print(f"cash balance = {self.cash_register}")
 
 
 if __name__ == "__main__":
