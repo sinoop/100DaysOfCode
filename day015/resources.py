@@ -21,7 +21,15 @@ MENU = {
             "coffee": 24,
         },
         "cost": 3.0,
+    },
+    "decaf": {
+        "ingredients": {
+            "water": 10,
+            "coffee": 10,
+        },
+        "cost": 0.5,
     }
+
 }
 
 resources = {

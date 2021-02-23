@@ -51,7 +51,7 @@ def check_and_give_balance(amount, total_given):
     False
     """
     if amount == total_given:
-        print("Exact amount tendered..!!")
+        print("Exact amount tendered. Thank you...!!")
         return True
     elif amount < total_given:
         balance = round(total_given - amount, 2)
@@ -61,13 +61,13 @@ def check_and_give_balance(amount, total_given):
               f"Balance amount is : ${balance}.")
         balance_string = ""
         if quarters != 0:
-            balance_string += f"{quarters} quarters."
+            balance_string += f"{quarters} quarters. "
         if nickel != 0:
-            balance_string += f"{nickel} nickels."
+            balance_string += f"{nickel} nickels. "
         if dime != 0:
-            balance_string += f"{dime} dimes."
+            balance_string += f"{dime} dimes. "
         if penny != 0:
-            balance_string += f"{penny} pennies"
+            balance_string += f"{penny} pennies. "
 
         print(f"Tendering {balance_string}")
 
@@ -122,11 +122,13 @@ class CoffeeMachine:
             self.cash_register += cost
             for ingredient in MENU.get(item).get('ingredients'):
                 self.ingredients[ingredient] -= MENU.get(item).get('ingredients').get(ingredient)
-                print(f"{ingredient} = {self.ingredients[ingredient]}")
+            self.print_ingredients_report()
 
-    def print_report(self):
+    def print_ingredients_report(self):
         for i in self.ingredients.keys():
             print(f"{i} = {self.ingredients[i]}")
+
+    def print_cash_balance_report(self):
         print(f"cash balance = {self.cash_register}")
 
 
